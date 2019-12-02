@@ -3,7 +3,7 @@
 Projeto desenvolvido durante o curso "Programando Sonhos Delas"
 realizado pela Prodabel e Prefeitura de Belo Horizonte.
 
-WORK IN PROGRESS
+**Projeto em andamento**
 
 - Formulário em HTML para inscrição de alunos
 - Validação dos campos do formulário em Javascript
