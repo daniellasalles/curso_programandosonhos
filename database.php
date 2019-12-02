@@ -78,25 +78,6 @@
             mysqli_query($mysqli, $query);
         
     }
-    
-    function atribuiDadosPessoais($mysqli, $post, $coluna) {
-        $IDatualPessoa = mysqli_insert_id($mysqli);
-        $query = "UPDATE pessoa
-                SET '$coluna' = '$post'
-                WHERE ID_pessoa = $IDatualPessoa";
-
-        $atribuiDadosPessoais = mysqli_query($mysqli, $query);
-        return $atribuiDadosPessoais;
-    }
-        
-        /*
-        if($_POST['escolaridade']) {
-            $query = "UPDATE pessoa 
-                     SET escolaridade.ID_estcivil = '$postDados'
-                     WHERE ID_pessoa = '$IDatual'";
-            $estadocivil = mysqli_query($mysqli, $query);
-        }
-        */
 
     function exibePessoa ($mysqli, $paginaCorrente=1, $qtdPorPagina=5) {
         // constroi a query de insercao de dados de uma pessoa
