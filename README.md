@@ -7,7 +7,8 @@ realizado pela Prodabel e Prefeitura de Belo Horizonte.
 
 ### TO DO LIST:
 
-* __Formulário em HTML para inscrição de alunos__
+* __Formulário em HTML para inscrição de alunos baseado no formulário criado pelo professor__
+  - [Formulário do professor](https://github.com/daniellasalles/curso_programandosonhos/blob/master/a5_01_inscricao-e-registros.php) 
 
 * __Criação da estrutura do banco de dados MySQL__
 
