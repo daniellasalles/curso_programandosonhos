@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02-Dez-2019 às 17:55
+-- Tempo de geração: 09-Dez-2019 às 15:17
 -- Versão do servidor: 10.4.8-MariaDB
 -- versão do PHP: 7.1.33
 
@@ -30,8 +30,16 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `conhecimento` (
   `ID_conhecimento` int(11) NOT NULL,
-  `nome_conhecimento` text DEFAULT NULL
+  `conhecimento` enum('Inglês básico','Informática básica') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `conhecimento`
+--
+
+INSERT INTO `conhecimento` (`ID_conhecimento`, `conhecimento`) VALUES
+(1, 'Inglês básico'),
+(2, 'Informática básica');
 
 -- --------------------------------------------------------
 
@@ -41,9 +49,10 @@ CREATE TABLE `conhecimento` (
 
 CREATE TABLE `endereco` (
   `ID_endereco` int(11) NOT NULL,
-  `cep_endereco` int(11) DEFAULT NULL,
+  `cep` int(11) NOT NULL,
   `logradouro` text DEFAULT NULL,
-  `numero_endereco` int(11) DEFAULT NULL
+  `numero` int(11) DEFAULT NULL,
+  `complemento` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -54,9 +63,20 @@ CREATE TABLE `endereco` (
 
 CREATE TABLE `escolaridade` (
   `ID_escolaridade` int(11) NOT NULL,
-  `escolaridade` varchar(50) DEFAULT NULL,
-  `outrosconhecimentos` enum('Inglês','Informática') NOT NULL
+  `escolaridade` enum('Fundamental incompleto','Fundamental completo','Médio incompleto','Médio completo','Superior incompleto','Superior completo') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `escolaridade`
+--
+
+INSERT INTO `escolaridade` (`ID_escolaridade`, `escolaridade`) VALUES
+(1, 'Fundamental incompleto'),
+(2, 'Fundamental completo'),
+(3, 'Médio incompleto'),
+(4, 'Médio completo'),
+(5, 'Superior incompleto'),
+(6, 'Superior completo');
 
 -- --------------------------------------------------------
 
@@ -67,6 +87,28 @@ CREATE TABLE `escolaridade` (
 CREATE TABLE `estado_civil` (
   `ID_estcivil` int(11) NOT NULL,
   `estadocivil` enum('Solteiro','Casado','Separado','Divorciado','Viúvo') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `estado_civil`
+--
+
+INSERT INTO `estado_civil` (`ID_estcivil`, `estadocivil`) VALUES
+(1, 'Solteiro'),
+(2, 'Casado'),
+(3, 'Separado'),
+(4, 'Divorciado'),
+(5, 'Viúvo');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `informacoes`
+--
+
+CREATE TABLE `informacoes` (
+  `ID_informacoes` int(11) NOT NULL,
+  `informacoes` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -91,9 +133,18 @@ CREATE TABLE `pessoa` (
 --
 
 CREATE TABLE `tipo_logradouro` (
-  `ID_tipo_logradouro` int(11) NOT NULL,
-  `nome_tipo_logradouro` varchar(50) DEFAULT NULL
+  `ID_logradouro` int(11) NOT NULL,
+  `tipologradouro` enum('Rua','Avenida','Praça','') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `tipo_logradouro`
+--
+
+INSERT INTO `tipo_logradouro` (`ID_logradouro`, `tipologradouro`) VALUES
+(1, 'Rua'),
+(2, 'Avenida'),
+(3, 'Praça');
 
 --
 -- Índices para tabelas despejadas
@@ -124,6 +175,12 @@ ALTER TABLE `estado_civil`
   ADD PRIMARY KEY (`ID_estcivil`);
 
 --
+-- Índices para tabela `informacoes`
+--
+ALTER TABLE `informacoes`
+  ADD PRIMARY KEY (`ID_informacoes`);
+
+--
 -- Índices para tabela `pessoa`
 --
 ALTER TABLE `pessoa`
@@ -134,7 +191,7 @@ ALTER TABLE `pessoa`
 -- Índices para tabela `tipo_logradouro`
 --
 ALTER TABLE `tipo_logradouro`
-  ADD PRIMARY KEY (`ID_tipo_logradouro`);
+  ADD PRIMARY KEY (`ID_logradouro`);
 
 --
 -- AUTO_INCREMENT de tabelas despejadas
@@ -144,7 +201,7 @@ ALTER TABLE `tipo_logradouro`
 -- AUTO_INCREMENT de tabela `conhecimento`
 --
 ALTER TABLE `conhecimento`
-  MODIFY `ID_conhecimento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_conhecimento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `endereco`
@@ -156,13 +213,19 @@ ALTER TABLE `endereco`
 -- AUTO_INCREMENT de tabela `escolaridade`
 --
 ALTER TABLE `escolaridade`
-  MODIFY `ID_escolaridade` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_escolaridade` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de tabela `estado_civil`
 --
 ALTER TABLE `estado_civil`
-  MODIFY `ID_estcivil` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_estcivil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de tabela `informacoes`
+--
+ALTER TABLE `informacoes`
+  MODIFY `ID_informacoes` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `pessoa`
@@ -174,7 +237,7 @@ ALTER TABLE `pessoa`
 -- AUTO_INCREMENT de tabela `tipo_logradouro`
 --
 ALTER TABLE `tipo_logradouro`
-  MODIFY `ID_tipo_logradouro` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_logradouro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restrições para despejos de tabelas
