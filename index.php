@@ -17,6 +17,12 @@
   $qtdPaginas = ceil($qtdeInscritos / $qtdPorPagina);
 
   $enumEstadoCivil = enumEstadoCivil($mysqli);
+  $enumLogradouro = enumLogradouro($mysqli);
+  $enumEscolaridade = enumEscolaridade($mysqli);
+  $enumConhecimento = enumConhecimento($mysqli);
+
+  
+
 ?>
 
 
@@ -57,55 +63,55 @@
   </header>
   
   <section id="exemplo">
-  
+    
     <h2>Formulário de Inscrição</h2>
   
             
     <form name="inscricao" method="post" action="">
     <p><small>Os campos marcados com <span style="color:red; font-weight:bold; font-size:18px">*</span> são de preenchimento obrigatório.</small></p>
-
+      <!------------------------------- DADOS PESSOAIS --------------------------------->
       <fieldset>
         <legend>Dados Pessoais</legend>
         <p>
           <label for="nome">Nome <span class="asterisco">*</span></label>
-          <input name="nome" type="text" id="nome" size="50" maxlength="50" required>
+          <input name="nome" type="text" id="nome" size="50" maxlength="50" >
           <label for="nascimento">Data de nascimento</label>
           <input name="nascimento"  type="date" id="nascimento" size="12" maxlength="10" placeholder="__/__/____">
         </p>
         <p>
           <label for="cpf">CPF <span class="asterisco">*</span></label>
-          <input name="cpf" type="text" id="cpf" size="16" maxlength="14" required>
+          <input name="cpf" type="text" id="cpf" size="16" maxlength="14" >
         </p>
         <p>
           <label>Estado Civil</label>
           <?php
-            
             foreach($enumEstadoCivil as $key => $value) {
           ?>
-            <label><input type="radio" name="estado-civil" id="estado-civil" value="<?= $value['ID_estcivil']?>" id="estado-civil_1"> <?= $value['estadocivil'] ?></label>
-            
+            <label><input type="radio" name="estado-civil" value="<?= $value['ID_estcivil']?>" id="estado-civil_1"> <?= $value['estadocivil'] ?></label>
           <?php
             }
           ?>
-
           <br>
         </p>
       </fieldset>
-      
-      <!-- 
+      <!--------------------------------- ENDEREÇO ----------------------------------->
       <fieldset>
         <legend>Endereço</legend>
         <p>
           <label for="cep">CEP <span class="asterisco">*</span></label>
-          <input name="cep" type="text" id="cep" size="12" maxlength="9" required>
+          <input name="cep" type="text" id="cep" size="12" maxlength="9" >
         </p>
         <p>
           <label for="tipo-endereco">Tipo</label>
           <select name="tipo-endereco" id="tipo-endereco">
-            <option>selecione...</option>
-            <option>Rua</option>
-            <option>Alameda</option>
-            <option>Avenida</option>
+            <option value="" disabled selected>Selecione...</option>
+            <?php 
+              foreach($enumLogradouro as $key => $value) {
+            ?>
+            <option value="<?= $value['ID_logradouro']?>"> <?= $value['tipologradouro'] ?> </option>
+            <?php
+            }
+            ?>
           </select>
         <br>    
         <label for="logradouro">Logradouro</label>
@@ -113,21 +119,34 @@
         <label for="numero">Número
         <input name="numero" type="text" id="numero" size="7" maxlength="5"></label>
         <label for="complemento">Complemento</label>
-        <input name="complemento" type="text" id="complemento" size="7" maxlength="5">
+        <input name="complemento" type="text" id="complemento" size="12" maxlength="10">
         </p>
       </fieldset>
-      -->
-
+      
+      <!---------------------------- FORMAÇÃO ACADÊMICA ------------------------------>
       <fieldset>
         <legend>Formação Acadêmica </legend>
         <p>
           <label for="escolaridade">Escolaridade <span class="asterisco">*</span></label>
-          <input name="escolaridade" type="text" id="escolaridade" size="55" maxlength="70" required>
+          <select name="escolaridade" id="escolaridade">
+            <option value="" disabled selected>Selecione...</option>
+            <?php
+              foreach($enumEscolaridade as $key => $value) {
+            ?>
+            <option value = "<?= $value['ID_escolaridade'] ?>"> <?= $value['escolaridade'] ?> </option>
+            <?php
+              }
+            ?>
         </p>
         <p>
           <label>Outros conhecimentos:</label>
-          <label><input type="checkbox" name="outroscursos1" value="checkbox1" id="outroscursos1">Inglês básico</label>
-          <label><input type="checkbox" name="outroscursos1" value="checkbox2" id="outroscursos2">Informática básica</label>
+          <?php
+            foreach($enumConhecimento as $key => $value) {
+          ?>
+           <label><input type="checkbox" name="<?=$value['conhecimento'] ?>" value="<?=$value['ID_conhecimento'] ?>" id="outroscursos1"><?=$value['conhecimento'] ?></label>
+          <?php
+          }
+          ?>
         </p>
         <p>
           <label for="info">Mais informações:</label>
@@ -136,30 +155,37 @@
         </p>
       </fieldset>
 
-      <!-- -->                 
+      <!------------------------------ SUBMETER FORMULÁRIO ---------------------------------->                 
         <input type="submit" name="acessar" id="acessar" value="ENVIAR INSCRIÇÂO">&nbsp;&nbsp;<input type="reset" name="cancelar" id="cancelar" value="CANCELAR">         
         
-        <?php
-          if($_POST) {
-            // recupera parametros POST. Os parâmetros no colchetes são os nomes dos campos do formulário HTML
-            inserePessoa($mysqli, 
-                         $_POST['nome'],
-                         $_POST['cpf'],
-                         $_POST['nascimento'] ?? ''
-                         );
 
-            insereEscolaridade($mysqli, $_POST['escolaridade']);
-
-            // atribui estado civil a cada pessoa
-            if (isset($_POST['estado-civil'])) {
-                atribuiEstCivil($mysqli,
-                $_POST['estado-civil']
-                );
-            }
-          }
-             
-        ?>
     </form>
+    <?php
+      if($_POST) {
+        // recupera parametros POST. Os parâmetros no colchetes são os nomes dos campos do formulário HTML
+        inserePessoa($mysqli, 
+                      $_POST['nome'],
+                      $_POST['cpf'],
+                      $_POST['nascimento'] ?? ''
+                      );
+
+        // atribui estado civil a ultima pessoa adicionada
+        if (isset($_POST['estado-civil'])) {
+          atribuiEstCivil($mysqli,
+                          $_POST['estado-civil']
+          );
+      }
+
+      // insere endereço
+      insereEndereco($mysqli,
+                    $_POST['cep'],
+                    $_POST['logradouro'],
+                    $_POST['numero'],
+                    $_POST['complemento'] ?? '');
+
+      }
+          
+    ?>
 
     <hr>
     
