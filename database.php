@@ -23,6 +23,7 @@
         return $mysqli;
     }
 
+    // FIELDSET = DADOS PESSOAIS
     // funcao para insercao das pessoas, os parametros sao passados no index. 
     // caso nao seja inserido algum dos campos, o padrao é preencher com vazio
     function inserePessoa($mysqli, 
@@ -38,10 +39,8 @@
         }
         $query = "INSERT INTO pessoa(nome, datanasc, cpf)
                   VALUES('$nome', '$datanasc', $cpf)";
-        
         // executa a query de insercao
         mysqli_query($mysqli, $query);
-       
         // verifica se aconteceu algum erro
         if(mysqli_errno($mysqli)) {
             echo mysqli_error($mysqli);
@@ -49,37 +48,64 @@
     } 
 
     // Enumera as opções de estado civil existentes no banco e cria opções no formulario
-    function enumEstadoCivil ($mysqli) {
+    function enumEstadoCivil($mysqli) {
         $query = "SELECT ID_estcivil, estadocivil 
                   FROM estado_civil";
         $enumEstadoCivil = mysqli_query ($mysqli, $query);
         return $enumEstadoCivil;
     }
 
-
-    function insereEscolaridade($mysqli, 
-        $escolaridade) {
-        $query = "INSERT INTO escolaridade(escolaridade)
-        VALUES ('$escolaridade')";
-
-        mysqli_query($mysqli, $query);
-
+    // Enumera as opções de tipo de logradouro
+    function enumLogradouro($mysqli) {
+        $query = "SELECT ID_logradouro, tipologradouro 
+                  FROM tipo_logradouro";
+        $enumLogradouro = mysqli_query ($mysqli, $query);
+        return $enumLogradouro;
     }
 
     // atribui ID_estcivil na tabela pessoa de acordo com o marcado no formulario
     function atribuiEstCivil($mysqli, $postEstCivil) {
 
-            $postEstCivil = intval($_POST['estado-civil']); 
-            $IDatualPessoa = mysqli_insert_id($mysqli);
-            $query = "UPDATE pessoa 
-                    SET pessoa.ID_estcivil = '$postEstCivil'
-                    WHERE ID_pessoa = '$IDatualPessoa'";
-
-            mysqli_query($mysqli, $query);
-        
+        $postEstCivil = intval($_POST['estado-civil']); 
+        $IDatualPessoa = mysqli_insert_id($mysqli);
+        $query = "UPDATE pessoa 
+                  SET pessoa.ID_estcivil = '$postEstCivil'
+                  WHERE ID_pessoa = '$IDatualPessoa'";
+        mysqli_query($mysqli, $query);
     }
 
-    function exibePessoa ($mysqli, $paginaCorrente=1, $qtdPorPagina=5) {
+    // FIELDSET = ENDEREÇO
+    // Insere dados do endereço
+    function insereEndereco($mysqli,
+                            $cep,
+                            $logradouro,
+                            $numero,
+                            $complemento = '' ) {
+        $query = "INSERT INTO endereco (cep, logradouro, numero, complemento)
+                  VALUES ('$cep', '$logradouro', $numero, '$complemento')";
+        mysqli_query($mysqli, $query);
+    
+    }
+
+    // FIELDSET = ESCOLARIDADE
+    // Enumera as opções de escolaridade
+    function enumEscolaridade($mysqli) {
+        $query = "SELECT ID_escolaridade, escolaridade
+                  FROM escolaridade";
+        $enumEscolaridade = mysqli_query($mysqli, $query);
+        return $enumEscolaridade;    
+    }
+
+    // Enumera as opções de outros conhecimentos
+    function enumConhecimento($mysqli) {
+        $query = "SELECT ID_conhecimento, conhecimento
+                  FROM conhecimento";
+        $enumConhecimento = mysqli_query($mysqli, $query);
+        return $enumConhecimento;
+
+    }
+
+ function exibePessoa ($mysqli, $paginaCorrente=1, $qtdPorPagina=5) {
         // constroi a query de insercao de dados de uma pessoa
         $listaPessoa = [];
         $offset = ($paginaCorrente-1) * $qtdPorPagina;
@@ -109,4 +135,5 @@
         $qtd = mysqli_fetch_assoc($resultado);
         return $qtd['qtd'];
     }
+    
 // arquivo puro php não precisa ser fechado
