@@ -44,6 +44,7 @@
         // verifica se aconteceu algum erro
         if(mysqli_errno($mysqli)) {
             echo mysqli_error($mysqli);
+
         }
     } 
 
@@ -55,26 +56,18 @@
         return $enumEstadoCivil;
     }
 
+
+
+    // FIELDSET = ENDEREÇO
+
     // Enumera as opções de tipo de logradouro
     function enumLogradouro($mysqli) {
         $query = "SELECT ID_logradouro, tipologradouro 
-                  FROM tipo_logradouro";
+                    FROM tipo_logradouro";
         $enumLogradouro = mysqli_query ($mysqli, $query);
         return $enumLogradouro;
     }
 
-    // atribui ID_estcivil na tabela pessoa de acordo com o marcado no formulario
-    function atribuiEstCivil($mysqli, $postEstCivil) {
-
-        $postEstCivil = intval($_POST['estado-civil']); 
-        $IDatualPessoa = mysqli_insert_id($mysqli);
-        $query = "UPDATE pessoa 
-                  SET pessoa.ID_estcivil = '$postEstCivil'
-                  WHERE ID_pessoa = '$IDatualPessoa'";
-        mysqli_query($mysqli, $query);
-    }
-
-    // FIELDSET = ENDEREÇO
     // Insere dados do endereço
     function insereEndereco($mysqli,
                             $cep,
@@ -84,8 +77,8 @@
         $query = "INSERT INTO endereco (cep, logradouro, numero, complemento)
                   VALUES ('$cep', '$logradouro', $numero, '$complemento')";
         mysqli_query($mysqli, $query);
-    
     }
+
 
     // FIELDSET = ESCOLARIDADE
     // Enumera as opções de escolaridade
@@ -102,10 +95,62 @@
                   FROM conhecimento";
         $enumConhecimento = mysqli_query($mysqli, $query);
         return $enumConhecimento;
-
     }
 
- function exibePessoa ($mysqli, $paginaCorrente=1, $qtdPorPagina=5) {
+    // Adiciona 'mais informacoes'
+    function insereInfo($mysqli,
+                        $info = '') {
+        $query = "INSERT INTO informacoes (informacoes)
+                  VALUES ('$info')";
+        mysqli_query($mysqli, $query);
+    }
+
+    // Atribui todos as chaves estrangeiras e relaciona as tabelas
+    
+    // atribui ID_estcivil na tabela pessoa de acordo com o marcado no formulario
+    function atribuiEstCivil($mysqli, $postEstCivil, $IDpessoa) {
+        $query = "UPDATE pessoa 
+                  SET pessoa.ID_estcivil = $postEstCivil
+                  WHERE ID_pessoa = $IDpessoa";
+        mysqli_query($mysqli, $query);
+    }
+
+    // Atribui ID do tipo de logradouro ao endereco
+    function atribuiLogradouro($mysqli, $postLogradouro, $IDendereco) {
+        $query = "UPDATE endereco
+                    SET endereco.ID_logradouro = $postLogradouro 
+                    WHERE ID_endereco = $IDendereco";
+        mysqli_query($mysqli, $query);
+    }
+
+    // Atribui ID endereco na tabela pessoa
+    function atribuiEndereco($mysqli, $IDendereco, $IDpessoa) {
+        $query = "UPDATE pessoa
+                  SET pessoa.ID_endereco = $IDendereco
+                  WHERE ID_pessoa = $IDpessoa";
+        mysqli_query($mysqli, $query);
+    }
+
+    // Atribui ID escolaridade na tabela pessoa
+    function atribuiEscolaridade($mysqli, $postEscolaridade, $IDpessoa) {
+        $query = "UPDATE pessoa
+                  SET pessoa.ID_escolaridade = $postEscolaridade
+                  WHERE ID_pessoa = $IDpessoa";
+        mysqli_query($mysqli, $query);
+    }
+
+    // Atribui ID informacoes na tabela pessoa
+    function atribuiInfo($mysqli, $postInfo, $IDpessoa) {
+        $query = "UPDATE pessoa
+                  SET pessoa.ID_informacoes = $postInfo
+                  WHERE ID_pessoa = $IDpessoa";
+        mysqli_query($mysqli, $query);
+    }
+    
+
+
+
+    function exibePessoa ($mysqli, $paginaCorrente=1, $qtdPorPagina=5) {
         // constroi a query de insercao de dados de uma pessoa
         $listaPessoa = [];
         $offset = ($paginaCorrente-1) * $qtdPorPagina;

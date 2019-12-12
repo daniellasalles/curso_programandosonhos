@@ -151,7 +151,7 @@
         <p>
           <label for="info">Mais informações:</label>
           <br>
-          <textarea maxlength="250" id="info"></textarea>
+          <textarea maxlength="250" name="info" id="info"></textarea>
         </p>
       </fieldset>
 
@@ -163,25 +163,39 @@
     <?php
       if($_POST) {
         // recupera parametros POST. Os parâmetros no colchetes são os nomes dos campos do formulário HTML
+        
         inserePessoa($mysqli, 
                       $_POST['nome'],
                       $_POST['cpf'],
                       $_POST['nascimento'] ?? ''
                       );
-
+        $IDpessoa = mysqli_insert_id($mysqli);
         // atribui estado civil a ultima pessoa adicionada
+
         if (isset($_POST['estado-civil'])) {
           atribuiEstCivil($mysqli,
-                          $_POST['estado-civil']
+                          intval($_POST['estado-civil']),
+                          $IDpessoa
           );
       }
 
-      // insere endereço
-      insereEndereco($mysqli,
-                    $_POST['cep'],
-                    $_POST['logradouro'],
-                    $_POST['numero'],
-                    $_POST['complemento'] ?? '');
+        // insere endereço
+        insereEndereco($mysqli,
+                      $_POST['cep'],
+                      intval($_POST['logradouro']),
+                      $_POST['numero'],
+                      $_POST['complemento'] ?? '');
+
+        $IDendereco = mysqli_insert_id($mysqli);
+
+        atribuiEndereco($mysqli, $IDendereco, $IDpessoa);
+
+        atribuiLogradouro($mysqli, intval($_POST['tipo-endereco']) ?? '', $IDendereco);
+
+        atribuiEscolaridade($mysqli, intval($_POST['escolaridade']) ?? '', $IDpessoa);
+
+        insereInfo($mysqli,
+                   $_POST['info'] ?? '');
 
       }
           
