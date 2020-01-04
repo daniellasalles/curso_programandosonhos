@@ -31,7 +31,7 @@
 
     <head>
       <title>Introdução ao HTML / Projeto Programando Sonhos</title>
-      <meta name="author" content="Nome do Autor">
+      <meta name="author" content="Daniella Salles">
       <meta name="description" content="Introdução ao HTML">
       <meta name="keywords" content="HTML,CSS,Projeto Programando Sonhos,PBH">        
         
@@ -87,7 +87,7 @@
           <?php
             foreach($enumEstadoCivil as $key => $value) {
           ?>
-            <label><input type="radio" name="estado-civil" value="<?= $value['ID_estcivil']?>" id="estado-civil_1"> <?= $value['estadocivil'] ?></label>
+            <label><input type="radio" name="estado-civil" value="<?= $value['ID_estcivil']?>"> <!-- id="estado-civil_1" --> <?= $value['estadocivil'] ?></label>
           <?php
             }
           ?>
@@ -140,13 +140,8 @@
         </p>
         <p>
           <label>Outros conhecimentos:</label>
-          <?php
-            foreach($enumConhecimento as $key => $value) {
-          ?>
-           <label><input type="checkbox" name="<?=$value['conhecimento'] ?>" value="<?=$value['ID_conhecimento'] ?>" id="outroscursos1"><?=$value['conhecimento'] ?></label>
-          <?php
-          }
-          ?>
+            <label><input type="checkbox" name="ingles" value="ingles" > <!-- id="outroscursos" --> Inglês Básico </label>
+            <label><input type="checkbox" name="informatica" value="informatica" > <!-- id="outroscursos" --> Informática Básica </label>
         </p>
         <p>
           <label for="info">Mais informações:</label>
@@ -166,8 +161,9 @@
         
         inserePessoa($mysqli, 
                       $_POST['nome'],
+                      $_POST['nascimento'] ?? '',
                       $_POST['cpf'],
-                      $_POST['nascimento'] ?? ''
+                      $_POST['info'] ?? ''
                       );
         $IDpessoa = mysqli_insert_id($mysqli);
         // atribui estado civil a ultima pessoa adicionada
@@ -177,12 +173,12 @@
                           intval($_POST['estado-civil']),
                           $IDpessoa
           );
-      }
+        } 
 
         // insere endereço
         insereEndereco($mysqli,
                       $_POST['cep'],
-                      intval($_POST['logradouro']),
+                      $_POST['logradouro'],
                       $_POST['numero'],
                       $_POST['complemento'] ?? '');
 
@@ -194,9 +190,17 @@
 
         atribuiEscolaridade($mysqli, intval($_POST['escolaridade']) ?? '', $IDpessoa);
 
-        insereInfo($mysqli,
-                   $_POST['info'] ?? '');
+        if (isset($_POST['ingles'])) {
+          insereIngles($mysqli, 
+                      $_POST['ingles'] ?? '', 
+                      $IDpessoa);
+        }
 
+        if (isset($_POST['informatica'])) {
+          insereInformatica($mysqli, 
+                      $_POST['informatica'] ?? '', 
+                      $IDpessoa);
+          }
       }
           
     ?>

@@ -27,9 +27,10 @@
     // funcao para insercao das pessoas, os parametros sao passados no index. 
     // caso nao seja inserido algum dos campos, o padrao é preencher com vazio
     function inserePessoa($mysqli, 
-                          $nome='', 
+                          $nome='',
+                          $datanasc='', 
                           $cpf='', 
-                          $datanasc='') {
+                          $info='') {
 
         $cpf = str_replace('.', '', $cpf);
         $cpf = str_replace('-', '', $cpf); 
@@ -37,8 +38,8 @@
             echo 'cpf inválido!';
             return '';
         }
-        $query = "INSERT INTO pessoa(nome, datanasc, cpf)
-                  VALUES('$nome', '$datanasc', $cpf)";
+        $query = "INSERT INTO pessoa(nome, datanasc, cpf, informacoes)
+                  VALUES('$nome', '$datanasc', $cpf, '$info')";
         // executa a query de insercao
         mysqli_query($mysqli, $query);
         // verifica se aconteceu algum erro
@@ -47,6 +48,7 @@
 
         }
     } 
+
 
     // Enumera as opções de estado civil existentes no banco e cria opções no formulario
     function enumEstadoCivil($mysqli) {
@@ -97,13 +99,6 @@
         return $enumConhecimento;
     }
 
-    // Adiciona 'mais informacoes'
-    function insereInfo($mysqli,
-                        $info = '') {
-        $query = "INSERT INTO informacoes (informacoes)
-                  VALUES ('$info')";
-        mysqli_query($mysqli, $query);
-    }
 
     // Atribui todos as chaves estrangeiras e relaciona as tabelas
     
@@ -139,15 +134,15 @@
         mysqli_query($mysqli, $query);
     }
 
-    // Atribui ID informacoes na tabela pessoa
-    function atribuiInfo($mysqli, $postInfo, $IDpessoa) {
-        $query = "UPDATE pessoa
-                  SET pessoa.ID_informacoes = $postInfo
-                  WHERE ID_pessoa = $IDpessoa";
+    // Insere dados sobre outros cursos na tabela pessoa
+    function insereIngles($mysqli, $postIngles, $IDpessoa){
+        $query = "UPDATE pessoa SET ingles = 'Sim' WHERE ID_pessoa = $IDpessoa";
         mysqli_query($mysqli, $query);
     }
-    
-
+    function insereInformatica($mysqli, $postInformatica, $IDpessoa) {
+        $query = "UPDATE pessoa SET informatica = 'Sim' WHERE ID_pessoa = $IDpessoa";
+        mysqli_query($mysqli, $query);
+    }
 
 
     function exibePessoa ($mysqli, $paginaCorrente=1, $qtdPorPagina=5) {
