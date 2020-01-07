@@ -13,8 +13,6 @@ realizado pela Prodabel e Prefeitura de Belo Horizonte.
 
 - [x] __Criação da estrutura do banco de dados SQL__
 
-- [ ] __Validação dos campos do formulário em Javascript__
-
 - [x] __Inserção de dados no banco, consulta e exibição com PHP__
   - [x] Inserir dados pessoais (nome, data de nascimento, cpf)
   - [x] Inserir endereço 
@@ -23,4 +21,5 @@ realizado pela Prodabel e Prefeitura de Belo Horizonte.
   - [x] Recuperar dados do banco e exibir na tabela abaixo do formulário
   - [x] Criar paginação com 5 resultados por página
   
+  - [ ] __Validação dos campos do formulário em Javascript__
   
