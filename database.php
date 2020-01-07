@@ -149,9 +149,10 @@
         // constroi a query de insercao de dados de uma pessoa
         $listaPessoa = [];
         $offset = ($paginaCorrente-1) * $qtdPorPagina;
-        $query = "SELECT nome, datanasc 
-                  FROM pessoa 
-                  ORDER BY nome ASC
+        $query = "SELECT pessoa.nome, pessoa.datanasc, escolaridade.escolaridade, pessoa.ingles, pessoa.informatica 
+                  FROM pessoa
+                  INNER JOIN escolaridade 
+                  ON pessoa.ID_escolaridade = escolaridade.ID_escolaridade
                   LIMIT $qtdPorPagina 
                   OFFSET $offset";
         $resultado = mysqli_query($mysqli, $query);

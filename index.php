@@ -5,22 +5,69 @@
   $mysqli = conecta('localhost', 'root', '', 'form_cadastro');
   // recupera lista de pessoas para exibir abaixo do form
   // pega o valor da página corrente
-  $pagCor = $_GET['paginaCorrente'] ?? 1;
-  // define quantidade de resultados exibidos por pagina
-  $qtdPorPagina = 5;
-  // exibe a lista de pessoas de acordo com a pagina corrente e qtde maxima por pagina
-  $listaPessoa = exibePessoa($mysqli, 
-                            $pagCor ?? 1, 
-                            $qtdPorPagina ?? 5);
-  // qtde total de inscritos
-  $qtdeInscritos = getQtdTotalPessoas($mysqli);
-  $qtdPaginas = ceil($qtdeInscritos / $qtdPorPagina);
-
   $enumEstadoCivil = enumEstadoCivil($mysqli);
   $enumLogradouro = enumLogradouro($mysqli);
   $enumEscolaridade = enumEscolaridade($mysqli);
   $enumConhecimento = enumConhecimento($mysqli);
 
+  // Se o formulário for postado, insere os dados no banco
+  if($_POST) {
+      // recupera parametros POST. Os parâmetros no colchetes são os nomes dos campos do formulário HTML
+      inserePessoa($mysqli, 
+                    $_POST['nome'],
+                    $_POST['nascimento'] ?? '',
+                    $_POST['cpf'],
+                    $_POST['info'] ?? ''
+                    );
+      $IDpessoa = mysqli_insert_id($mysqli);
+
+      // atribui estado civil a ultima pessoa adicionada
+      if (isset($_POST['estado-civil'])) {
+        atribuiEstCivil($mysqli,
+                        intval($_POST['estado-civil']),
+                        $IDpessoa
+        );
+      } 
+
+      // insere endereço
+      insereEndereco($mysqli,
+                    $_POST['cep'],
+                    $_POST['logradouro'],
+                    $_POST['numero'],
+                    $_POST['complemento'] ?? '');
+
+      $IDendereco = mysqli_insert_id($mysqli);
+
+      atribuiEndereco($mysqli, $IDendereco, $IDpessoa);
+
+      atribuiLogradouro($mysqli, intval($_POST['tipo-endereco']) ?? '', $IDendereco);
+
+      atribuiEscolaridade($mysqli, intval($_POST['escolaridade']) ?? '', $IDpessoa);
+
+      if (isset($_POST['ingles'])) {
+        insereIngles($mysqli, 
+                    $_POST['ingles'] ?? '', 
+                    $IDpessoa);
+      }
+
+      if (isset($_POST['informatica'])) {
+        insereInformatica($mysqli, 
+                          $_POST['informatica'] ?? '', 
+                          $IDpessoa);
+      }
+    }
+
+    // recupera lista de pessoas para exibir na tabela
+    $pagCor = $_GET['paginaCorrente'] ?? 1;
+    // define quantidade de resultados exibidos por pagina
+    $qtdPorPagina = 5;
+    // exibe a lista de pessoas de acordo com a pagina corrente e qtde maxima por pagina
+    $listaPessoa = exibePessoa($mysqli, 
+                              $pagCor ?? 1, 
+                              $qtdPorPagina ?? 5);
+    // qtde total de inscritos
+    $qtdeInscritos = getQtdTotalPessoas($mysqli);
+    $qtdPaginas = ceil($qtdeInscritos / $qtdPorPagina);
   
 
 ?>
@@ -151,60 +198,11 @@
       </fieldset>
 
       <!------------------------------ SUBMETER FORMULÁRIO ---------------------------------->                 
-        <input type="submit" name="acessar" id="acessar" value="ENVIAR INSCRIÇÂO">&nbsp;&nbsp;<input type="reset" name="cancelar" id="cancelar" value="CANCELAR">         
+        <input type="submit" name="acessar" id="acessar" value="ENVIAR INSCRIÇÃO">&nbsp;&nbsp;<input type="reset" name="cancelar" id="cancelar" value="CANCELAR">         
         
 
     </form>
-    <?php
-      if($_POST) {
-        // recupera parametros POST. Os parâmetros no colchetes são os nomes dos campos do formulário HTML
-        
-        inserePessoa($mysqli, 
-                      $_POST['nome'],
-                      $_POST['nascimento'] ?? '',
-                      $_POST['cpf'],
-                      $_POST['info'] ?? ''
-                      );
-        $IDpessoa = mysqli_insert_id($mysqli);
-        // atribui estado civil a ultima pessoa adicionada
-
-        if (isset($_POST['estado-civil'])) {
-          atribuiEstCivil($mysqli,
-                          intval($_POST['estado-civil']),
-                          $IDpessoa
-          );
-        } 
-
-        // insere endereço
-        insereEndereco($mysqli,
-                      $_POST['cep'],
-                      $_POST['logradouro'],
-                      $_POST['numero'],
-                      $_POST['complemento'] ?? '');
-
-        $IDendereco = mysqli_insert_id($mysqli);
-
-        atribuiEndereco($mysqli, $IDendereco, $IDpessoa);
-
-        atribuiLogradouro($mysqli, intval($_POST['tipo-endereco']) ?? '', $IDendereco);
-
-        atribuiEscolaridade($mysqli, intval($_POST['escolaridade']) ?? '', $IDpessoa);
-
-        if (isset($_POST['ingles'])) {
-          insereIngles($mysqli, 
-                      $_POST['ingles'] ?? '', 
-                      $IDpessoa);
-        }
-
-        if (isset($_POST['informatica'])) {
-          insereInformatica($mysqli, 
-                      $_POST['informatica'] ?? '', 
-                      $IDpessoa);
-          }
-      }
-          
-    ?>
-
+    
     <hr>
     
         <h2>Relação de Inscritos</h2>
@@ -229,15 +227,18 @@
               $diff = $d2 -> diff($d1);
               echo $diff->y;
               ?></td>
-          <td>&nbsp;</td>
-          <td>S/N</td>
-          <td>S/N</td>
+          <td><?= $value['escolaridade']; ?></td>
+          <td><?= $value['ingles'] ?? '' ?></td>
+          <td><?= $value['informatica'] ?? ""; ?></td>
         </tr>
       <?php
       }
       ?>
 
     </table>
+
+    
+
     
     <form action="" method="get" id='paginacao'>
       <input type="hidden" name='paginaCorrente' id='paginaCorrente'>
