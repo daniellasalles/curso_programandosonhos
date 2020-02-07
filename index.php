@@ -82,8 +82,8 @@
       <meta name="description" content="Introdução ao HTML">
       <meta name="keywords" content="HTML,CSS,Projeto Programando Sonhos,PBH">        
         
-    	<link href="css/estilos.css" rel="stylesheet" type="text/css">
-    
+      <link href="css/estilos.css" rel="stylesheet" type="text/css">
+          
       <script>
         function pagina(valor) {
           let qtdPaginas = <?= $qtdPaginas ?>;
@@ -97,10 +97,11 @@
           document.getElementById('paginacao').submit();
         }
         </script>
+        
     </head>
     
-<body>  
-    
+<body>    
+  <script src='script.js'></script>
   <header>
   
     <h1>Projeto Programando Sonhos</h1>
@@ -114,20 +115,32 @@
     <h2>Formulário de Inscrição</h2>
   
             
-    <form name="inscricao" method="post" action="">
+    <form name="inscricao" method="post" action="" id="form">
     <p><small>Os campos marcados com <span style="color:red; font-weight:bold; font-size:18px">*</span> são de preenchimento obrigatório.</small></p>
       <!------------------------------- DADOS PESSOAIS --------------------------------->
       <fieldset>
         <legend>Dados Pessoais</legend>
         <p>
           <label for="nome">Nome <span class="asterisco">*</span></label>
-          <input name="nome" type="text" id="nome" size="50" maxlength="50" >
+          <input name="nome" 
+                 type="text" 
+                 id="nome" 
+                 size="50"
+                 maxlength="50"
+                 placeholder="Digite seu nome completo" 
+                 required>
+
           <label for="nascimento">Data de nascimento</label>
           <input name="nascimento"  type="date" id="nascimento" size="12" maxlength="10" placeholder="__/__/____">
         </p>
         <p>
           <label for="cpf">CPF <span class="asterisco">*</span></label>
-          <input name="cpf" type="text" id="cpf" size="16" maxlength="14" >
+          <input name="cpf" 
+                 type="text" 
+                 id="cpf" 
+                 size="16" 
+                 maxlength="14" 
+                 placeholder='Apenas números'>
         </p>
         <p>
           <label>Estado Civil</label>
@@ -198,7 +211,14 @@
       </fieldset>
 
       <!------------------------------ SUBMETER FORMULÁRIO ---------------------------------->                 
-        <input type="submit" name="acessar" id="acessar" value="ENVIAR INSCRIÇÃO">&nbsp;&nbsp;<input type="reset" name="cancelar" id="cancelar" value="CANCELAR">         
+        <input type="submit" 
+               name="acessar" 
+               id="acessar" 
+               value="ENVIAR INSCRIÇÃO"
+               onclick="validaForm()">
+               &nbsp;&nbsp;
+        
+        <input type="reset" name="cancelar" id="cancelar" value="CANCELAR">         
         
 
     </form>
@@ -276,7 +296,7 @@
         </div>            
 
   </footer>
-            
+  
 <!-- ======================================================================= -->
 </body>
 </html>
