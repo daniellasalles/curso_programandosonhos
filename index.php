@@ -115,7 +115,7 @@
     <h2>Formulário de Inscrição</h2>
   
             
-    <form name="inscricao" method="post" action="" id="form">
+    <form name="inscricao" method="post" action="" onsubmit="return validaForm()" id="form">
     <p><small>Os campos marcados com <span style="color:red; font-weight:bold; font-size:18px">*</span> são de preenchimento obrigatório.</small></p>
       <!------------------------------- DADOS PESSOAIS --------------------------------->
       <fieldset>
@@ -140,7 +140,8 @@
                  id="cpf" 
                  size="16" 
                  maxlength="14" 
-                 placeholder='Apenas números'>
+                 placeholder='Apenas números'
+                 oninput="maskCPF(document.getElementById('cpf').value)">
         </p>
         <p>
           <label>Estado Civil</label>
@@ -159,7 +160,8 @@
         <legend>Endereço</legend>
         <p>
           <label for="cep">CEP <span class="asterisco">*</span></label>
-          <input name="cep" type="text" id="cep" size="12" maxlength="9" >
+          <input name="cep" type="text" id="cep" size="12" maxlength="9" 
+                 oninput="maskCEP(document.getElementById('cep').value)">
         </p>
         <p>
           <label for="tipo-endereco">Tipo</label>
@@ -214,8 +216,7 @@
         <input type="submit" 
                name="acessar" 
                id="acessar" 
-               value="ENVIAR INSCRIÇÃO"
-               onclick="validaForm()">
+               value="ENVIAR INSCRIÇÃO">
                &nbsp;&nbsp;
         
         <input type="reset" name="cancelar" id="cancelar" value="CANCELAR">         
